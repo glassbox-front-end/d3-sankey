@@ -66,8 +66,8 @@ export default function Sankey() {
   function sankey() {
     const graph = {nodes: nodes.apply(null, arguments), links: links.apply(null, arguments)};
     computeNodeLinks(graph);
-    computeNodeValues(graph);
     computeNodeDepths(graph);
+    computeNodeValues(graph);
     computeNodeHeights(graph);
     computeNodeBreadths(graph);
     computeLinkBreadths(graph);
@@ -142,10 +142,14 @@ export default function Sankey() {
 
   function computeNodeValues({nodes}) {
     for (const node of nodes) {
-      node.value = Math.max(
-        sum(node.sourceLinks, value),
-        sum(node.targetLinks, value)
-      );
+      if (!node.depth && node.virtualTargetLinkValue) {
+        node.value = node.virtualTargetLinkValue;
+      } else {
+        node.value = Math.max(
+            sum(node.sourceLinks, value),
+            sum(node.targetLinks, value)
+        );
+      }
     }
   }
 
