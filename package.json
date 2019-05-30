@@ -15,10 +15,10 @@
   "main": "dist/d3-sankey.js",
   "unpkg": "dist/d3-sankey.min.js",
   "module": "src/index.js",
-  "homepage": "https://github.com/d3/d3-sankey",
+  "homepage": "https://github.com/glassbox-front-end/d3-sankey",
   "repository": {
     "type": "git",
-    "url": "https://github.com/d3/d3-sankey.git"
+    "url": "https://github.com/glassbox-front-end/d3-sankey.git"
   },
   "scripts": {
     "pretest": "rollup -c",
