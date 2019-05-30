@@ -12,8 +12,7 @@
     "url": "https://bost.ocks.org/mike/"
   },
   "license": "BSD-3-Clause",
-  "main": "dist/d3-sankey.js",
-  "unpkg": "dist/d3-sankey.min.js",
+  "main": "src/index.js",
   "module": "src/index.js",
   "homepage": "https://github.com/glassbox-front-end/d3-sankey",
   "repository": {
