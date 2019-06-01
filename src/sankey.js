@@ -36,21 +36,6 @@ function find(nodeById, id) {
   return node;
 }
 
-function computeLinkBreadths({nodes}) {
-  for (const node of nodes) {
-    let y0 = node.y0;
-    let y1 = y0;
-    for (const link of node.sourceLinks) {
-      link.y0 = y0 + link.width / 2;
-      y0 += link.width;
-    }
-    for (const link of node.targetLinks) {
-      link.y1 = y1 + link.width / 2;
-      y1 += link.width;
-    }
-  }
-}
-
 export default function Sankey() {
   let x0 = 0, y0 = 0, x1 = 1, y1 = 1; // extent
   let dx = 24; // nodeWidth
@@ -123,6 +108,8 @@ export default function Sankey() {
     return arguments.length ? (iterations = +_, sankey) : iterations;
   };
 
+  // Populate the sourceLinks and targetLinks for each node.
+  // Also, if the source and target are not objects, assume they are indices.
   function computeNodeLinks({nodes, links}) {
     for (const [i, node] of nodes.entries()) {
       node.index = i;
@@ -153,6 +140,10 @@ export default function Sankey() {
     }
   }
 
+  // Iteratively assign the depth (x-position) for each node.
+  // Nodes are assigned the maximum depth of incoming neighbors plus one;
+  // nodes with no incoming links are assigned depth zero, while
+  // nodes with no outgoing links are assigned the maximum depth.
   function computeNodeDepths({nodes}) {
     const n = nodes.length;
     let current = new Set(nodes);
@@ -219,12 +210,16 @@ export default function Sankey() {
           link.width = link.value * ky;
         }
       }
-      y = (y1 - y + py) / (nodes.length + 1);
-      for (let i = 0; i < nodes.length; ++i) {
-        const node = nodes[i];
-        node.y0 += y * (i + 1);
-        node.y1 += y * (i + 1);
-      }
+
+      // ** This part has been deleted intentionally so that the nodes would always be top-aligned **
+      //
+      // y = (y1 - y + py) / (nodes.length + 1);
+      // for (let i = 0; i < nodes.length; ++i) {
+      //   const node = nodes[i];
+      //   node.y0 += y * (i + 1);
+      //   node.y1 += y * (i + 1);
+      // }
+
       reorderLinks(nodes);
     }
   }
@@ -238,6 +233,21 @@ export default function Sankey() {
       relaxRightToLeft(columns, alpha, beta);
       relaxLeftToRight(columns, alpha, beta);
     }
+  }
+
+  function computeLinkBreadths({nodes}) {
+    reorderLinks(nodes);
+    nodes.forEach(function(node) {
+      let y0 = node.y0, y1 = y0;
+      node.sourceLinks.forEach(function(link) {
+        link.y0 = y0 + link.width / 2;
+        y0 += link.width;
+      });
+      node.targetLinks.forEach(function(link) {
+        link.y1 = y1 + link.width / 2;
+        y1 += link.width;
+      });
+    });
   }
 
   // Reposition each node based on its incoming (target) links.
