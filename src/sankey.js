@@ -129,14 +129,10 @@ export default function Sankey() {
 
   function computeNodeValues({nodes}) {
     for (const node of nodes) {
-      if (!node.depth && node.virtualTargetLinkValue) {
-        node.value = node.virtualTargetLinkValue;
-      } else {
-        node.value = Math.max(
-            sum(node.sourceLinks, value),
-            sum(node.targetLinks, value)
-        );
-      }
+      node.value = node.value || Math.max(
+          sum(node.sourceLinks, value),
+          sum(node.targetLinks, value)
+      );
     }
   }
 
