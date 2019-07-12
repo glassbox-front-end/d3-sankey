@@ -8,8 +8,8 @@ function horizontalTarget(d) {
   return [d.target.x0, d.y1];
 }
 
-export default function() {
+export default function(source = horizontalSource, target = horizontalTarget) {
   return linkHorizontal()
-      .source(horizontalSource)
-      .target(horizontalTarget);
+      .source(source)
+      .target(target);
 }
